@@ -22,12 +22,7 @@ TAG="$NX_VERSION-$(echo $NODE_IMAGE | sed 's|:|-|g')"
 MANIFEST="$REPOSITORY:$TAG"
 PLATFORMS=("linux/amd64" "linux/arm/v7" "linux/arm64")
 
-function cleanup_manifest {
-    $CONTAINER_CMD manifest rm $MANIFEST
-}
-trap cleanup_manifest EXIT
-
-$CONTAINER_CMD manifest create $MANIFEST
+$CONTAINER_CMD manifest create $MANIFEST 2> /dev/null || true
 
 for PLATFORM in ${PLATFORMS[@]}; do    
     PLATFORM_TAG=$(echo $PLATFORM | sed 's|/|-|g')
@@ -39,9 +34,9 @@ for PLATFORM in ${PLATFORMS[@]}; do
             --build-arg PNPM_VERSION=$PNPM_VERSION \
             --build-arg YARN_VERSION=$YARN_VERSION \
             --build-arg NODE_IMAGE=$NODE_IMAGE \
-            --manifest "$MANIFEST" \
             --platform "$PLATFORM" -t "$IMAGE" -f "$SCRIPT_PATH/Dockerfile" "$SCRIPT_PATH"    
     $CONTAINER_CMD push "$IMAGE"
+    $CONTAINER_CMD manifest add "$MANIFEST" docker://$IMAGE
 done
 
-$CONTAINER_CMD manifest push --all $MANIFEST
+$CONTAINER_CMD manifest push --all "$MANIFEST"
