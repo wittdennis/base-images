@@ -20,7 +20,7 @@ IMAGE_NAME=${IMAGE_NAME:-"nx"}
 REPOSITORY="$CONTAINER_REGISTRY/$IMAGE_NAME"
 TAG="$NX_VERSION-$(echo $NODE_IMAGE | sed 's|:|-|g')"
 MANIFEST="$REPOSITORY:$TAG"
-PLATFORMS=("linux/arm/v7" "linux/arm/")
+PLATFORMS=("linux/amd64" "linux/arm/v7" "linux/arm64")
 
 function cleanup_manifest {
     $CONTAINER_CMD manifest rm $MANIFEST
@@ -29,18 +29,19 @@ trap cleanup_manifest EXIT
 
 $CONTAINER_CMD manifest create $MANIFEST
 
-for PLATFORM in ${PLATFORMS[@]}; do
+for PLATFORM in ${PLATFORMS[@]}; do    
     PLATFORM_TAG=$(echo $PLATFORM | sed 's|/|-|g')
     IMAGE="$REPOSITORY:$TAG-$PLATFORM_TAG"
+    echo "Building image for platform $PLATFORM using platform tag: $PLATFORM_TAG"
 
     $CONTAINER_CMD build \
             --build-arg NX_VERSION=$NX_VERSION \
             --build-arg PNPM_VERSION=$PNPM_VERSION \
             --build-arg YARN_VERSION=$YARN_VERSION \
             --build-arg NODE_IMAGE=$NODE_IMAGE \
-            --manifest $MANIFEST \
-            --platform $PLATFORM -t $IMAGE -f "$SCRIPT_PATH/Dockerfile" "$SCRIPT_PATH"    
-    $CONTAINER_CMD push $IMAGE
+            --manifest "$MANIFEST" \
+            --platform "$PLATFORM" -t "$IMAGE" -f "$SCRIPT_PATH/Dockerfile" "$SCRIPT_PATH"    
+    $CONTAINER_CMD push "$IMAGE"
 done
 
 $CONTAINER_CMD manifest push --all $MANIFEST
