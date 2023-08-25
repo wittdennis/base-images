@@ -44,8 +44,10 @@ for PLATFORM in ${PLATFORMS[@]}; do
             --build-arg YARN_VERSION=$YARN_VERSION \
             --build-arg NODE_IMAGE=$NODE_IMAGE \
             --platform "$PLATFORM" -t "$IMAGE" -f "$SCRIPT_PATH/Dockerfile" "$SCRIPT_PATH"
+    $CONTAINER_CMD push "$IMAGE"
 done
 
+echo "Creating manifest: $MANIFEST"
 MANIFEST_AMENDS=$(join ' --amend ' ${IMAGES[@]})
 $CONTAINER_CMD manifest rm "$MANIFEST" 2> /dev/null || true
 $CONTAINER_CMD manifest create "$MANIFEST" --amend $MANIFEST_AMENDS

@@ -2,6 +2,7 @@ name: cicd-pipeline
 on: [push]
 
 env:
+  REGISTRY: docker.io
   REGISTRY_USER: ${{ secrets.DOCKERHUB_USERNAME }}
   REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
 
@@ -36,4 +37,4 @@ jobs:
         run: ./nx/build.sh
         shell: bash
         env:
-          CONTAINER_REGISTRY: docker.io/${{ env.REGISTRY_USER }}
+          CONTAINER_REGISTRY: ${{ env.REGISTRY }}/${{ env.REGISTRY_USER }}
