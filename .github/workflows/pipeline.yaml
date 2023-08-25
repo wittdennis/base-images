@@ -25,10 +25,8 @@ jobs:
           password: ${{ env.REGISTRY_PASSWORD }}
 
       - name: install podman
-        uses: gacts/install-podman@v1.1.0
-        with:
-          kind: stable
-          qemu: true
+        run: apt-get update && apt-get install podman
+        shell: bash
 
       - name: build image
         run: ./nx/build.sh
