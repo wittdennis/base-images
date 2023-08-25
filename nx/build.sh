@@ -9,6 +9,7 @@ CONTAINER_CMD="docker"
 if [ -x "$(command -v podman)" ]; then
     CONTAINER_CMD=$(command -v podman)
 fi
+echo "Using $CONTAINER_CMD as container runtime"
 
 CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"localhost:5000"}
 NX_VERSION=${NX_VERSION:-"16.7.4"}
@@ -20,10 +21,9 @@ IMAGE_NAME=${IMAGE_NAME:-"nx"}
 REPOSITORY="$CONTAINER_REGISTRY/$IMAGE_NAME"
 TAG="$NX_VERSION-$(echo $NODE_IMAGE | sed 's|:|-|g')"
 MANIFEST="$REPOSITORY:$TAG"
-PLATFORMS=("linux/amd64" "linux/arm/v7" "linux/arm64")
+PLATFORMS=("linux/amd64")
 
 $CONTAINER_CMD manifest create $MANIFEST 2> /dev/null || true
-
 for PLATFORM in ${PLATFORMS[@]}; do    
     PLATFORM_TAG=$(echo $PLATFORM | sed 's|/|-|g')
     IMAGE="$REPOSITORY:$TAG-$PLATFORM_TAG"
