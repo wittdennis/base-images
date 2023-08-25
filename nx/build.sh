@@ -46,7 +46,7 @@ for PLATFORM in ${PLATFORMS[@]}; do
             --platform "$PLATFORM" -t "$IMAGE" -f "$SCRIPT_PATH/Dockerfile" "$SCRIPT_PATH"
 done
 
-MANIFEST_AMENDS=$(join ' --amends ' ${IMAGES[@]})
+MANIFEST_AMENDS=$(join ' --amend ' ${IMAGES[@]})
 $CONTAINER_CMD manifest rm "$MANIFEST" 2> /dev/null || true
 $CONTAINER_CMD manifest create "$MANIFEST" --amend $MANIFEST_AMENDS
 
