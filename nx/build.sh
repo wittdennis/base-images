@@ -17,6 +17,7 @@ if [ -x "$(command -v podman)" ]; then
     CONTAINER_CMD=$(command -v podman)
 fi
 echo "Using $CONTAINER_CMD as container runtime"
+echo $CONTAINER_CMD version
 
 CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"localhost:5000"}
 NX_VERSION=${NX_VERSION:-"16.7.4"}
