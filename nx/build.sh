@@ -51,9 +51,11 @@ MANIFEST_AMENDS=$(join ' --amends ' ${IMAGES[@]})
 $CONTAINER_CMD manifest rm "$MANIFEST" 2> /dev/null || true
 $CONTAINER_CMD manifest create "$MANIFEST" --amend $MANIFEST_AMENDS
 
-if [[ $CONTAINER_CMD == *"podman"* ]]; then
-    # this is only needed because the github runner ubuntu-22.04 does not have a podman version with PR: https://github.com/containers/podman/pull/18395
-    $CONTAINER_CMD manifest push "$MANIFEST" "docker://$MANIFEST"
-else
-    $CONTAINER_CMD manifest push "$MANIFEST"
-fi
+# if [[ $CONTAINER_CMD == *"podman"* ]]; then
+#     # this is only needed because the github runner ubuntu-22.04 does not have a podman version with PR: https://github.com/containers/podman/pull/18395
+#     $CONTAINER_CMD manifest push "$MANIFEST" "docker://$MANIFEST"
+# else
+#     $CONTAINER_CMD manifest push "$MANIFEST"
+# fi
+
+$CONTAINER_CMD manifest push "$MANIFEST"
