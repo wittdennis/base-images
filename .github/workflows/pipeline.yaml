@@ -25,7 +25,9 @@ jobs:
           password: ${{ env.REGISTRY_PASSWORD }}
 
       - name: install podman
-        run: apt-get update && apt-get install podman
+        run: |
+          sudo apt-get update 
+          sudo apt-get install podman
         shell: bash
 
       - name: build image
